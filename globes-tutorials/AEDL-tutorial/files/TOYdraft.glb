@@ -1,0 +1,274 @@
+%!GLoBES
+
+$version="3.0.0"
+
+/* ############################################################################
+  *                                                                            *
+  *                                                                            *
+  *   Copyright 2007, The GLoBES Team                                          *
+  *                                                                            *
+  *   This file is a starting draft of a AEDL file for the tutorial            *
+  *                                                                            *
+  *   "Advanced usage of AEDL"                                                 *
+  *                                                                            *
+  *   at the GLoBES Workshop, 24-26 January 2007, Heidelberg                        *
+  *                                                                            *
+  *   This file was prepared by M. Rolinec.                                    *
+  *                                                                            *
+  *   Last update 22/01/07                                                     *
+  *                                                                            *
+  *   WARNING: This file only describes a TOY example. The attributes of       *
+  *            the described experiment are completely fictious. Do not use    *
+  *            this file or any of the data files coming with this file for    *
+  *            scientific purposes.                                            *
+  *                                                                            *
+   ############################################################################ 
+*/
+
+/* HINT: If you are not familiar with describing experiments 
+         in AEDL, you should first visit page 83 of the 
+	 GLoBES manual. There, it is explained how one can
+	 include data, e.g. lists, from external data files
+	 into an AEDL file (not required for flux or cross 
+	 section data files). There is no "cut and paste" required. */ 
+
+
+/* ######################## Beam flux ######################################### */
+
+/* In this section the beam flux of the toy experiment can 
+   be set up. The description how neutrino fluxes can be 
+   implemented from an external data file can be found in 
+   the GLoBES manual on pages 88-90. */
+
+
+nuflux(#NAME)<			/* NAME can be replaced, e.g. FLUXplus */
+	@flux_file = ""		/* loads the flux file */
+	@time =			/* sets the runtime in units years */
+  	@norm =			/* sets a normalization factor */
+>
+
+
+
+
+
+
+
+
+
+
+
+
+/* ######################## Detector settings ################################# */
+
+/* Here the fiducial mass of the detector can be adjusted 
+   (see page 88 of the GLoBES manual). */
+
+
+$target_mass = 	        	/* kt (fiducial mass) */
+
+
+/* ######################## Energy window ##################################### */
+
+/* Here, the energy window and bin numbers are defined. 
+   The description of how to set the energy window is given 
+   on pages 95-97 in the GLoBES manual. */
+
+
+/* True Energy Level (pre-smearing) */
+
+$sampling_points = 		/* number of sampling points 
+				   before energy smearing */
+$sampling_min = 		/* GeV */
+$sampling_max = 		/* GeV */
+
+/* Reconstructed Energy Level (post-smearing) */
+
+$bins = 			/* number of bins */
+$emin = 	        	/* GeV */
+$emax = 	        	/* GeV */
+
+
+/* ######################## Baseline setting ################################## */
+
+/* In this section, the baseline length of the experiment and
+   the matter density is inserted to the AEDL file. There are 
+   three different profile types possible in GLoBES. Please choose
+   the one that seems to be appropriate for the requirements 
+   of the toy experiment that has to be described. Explanations
+   of the three types and the necesarry AEDL syntax are given in 
+   the GLoBES manual on pages 90-91. */ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ######################## Energy resolution ################################# */
+
+/* In this section, the energy resolution of different channels can 
+   be defined. One can either use manually defined migration matrices
+   or use the automatic energy smearing of the energy resolution 
+   functions provided by GLoBES. The implementation of smearing 
+   matrices is described in the GLoBES manual on pages 101-102 and the 
+   usage of the GLoBES internal resolution functions is explained on
+   pages 98-100 */
+
+
+energy(#NAME)<			/* NAME can be chosen for identification */
+	
+	
+>
+
+
+
+
+
+
+
+
+
+
+
+/* HINT: If one wants to compute the event rates without energy 
+         semaring, one still has to assign a number, so that 
+	 the AEDL file works properly. The value has to be very 
+	 small, so that no actual energy smearing is introduced. */
+
+
+
+
+/* ######################## Cross sections #################################### */
+
+/* In this section, the cross section data for different channels is 
+   loaded from external data files. Explanations can be found in the 
+   GLoBES maunal on pages 91-92. */
+
+
+cross(#NAME)<
+	@cross_file =         
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ##################### Energy dependent efficiencies ######################## */
+
+/* In this section, energy dependent efficiencies can be defined. 
+   There exists now, as a new feature of GLoBES 3.0, an interpolation
+   feature, that allows to give efficiencies independent of number and
+   width of the bins. See pages 84-85 of the GLoBES manual. This feature
+   is not required for Problem 1 and Problem 2. */
+
+
+
+
+
+
+
+
+
+
+
+/* ######################### Channel definitions ############################## */
+
+/* In this section the different required channels can be defined. The
+   detailed explanation of all features of the channel definition is
+   given in the GLoBES manual on pages 94 and 98. */
+
+/* WARNING: NAME has to be replaced in all cases to fit the strings
+            given above within this file. Equal strings for NAME 
+	    cannot be assigned. */ 
+
+
+channel(#NAME)<
+	@channel =	#NAME:	:	:	:	#NAME:	#NAME
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ########################## Setting the rules ############################### */
+
+/* Finally, defined channels can be gathered as signal and 
+   backgrounds in the so-called rules. Additionally, the systematical
+   uncertainties are introduced and their treatment is defined.
+   The building of the rules is described on pages 102-107 in 
+   the GLoBES manual. */
+ 
+ 
+rule(#NAME)<
+ 	@signal = #NAME
+	@signalerror =  : 
+
+	@background = @#NAME 
+	@backgrounderror =  : 
+
+	@sys_on_function = "chiSpectrumTilt"
+	@sys_off_function = "chiNoSysSpectrum"
+
+> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ############################################################################
+  *                                                                            *
+  *                               END OF FILE                                  *
+  *				                                               *
+   ############################################################################ */ 

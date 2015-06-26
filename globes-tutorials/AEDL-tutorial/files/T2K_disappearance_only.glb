@@ -1,0 +1,175 @@
+%!GLoBES
+
+$version="3.0.0"
+
+/* Copyright 2004,2005,2006,2007 The GLoBES Team
+ *
+ * If you modify this file you have to rename it.
+ *
+ * If you are using this file for producing a scientific publication
+ * or a talk please cite the following references and check the supporting
+ * files for a similar comment.
+ *
+ #* @Article{Huber:2002mx,
+ #*     author    = "Huber, Patrick and Lindner, Manfred and Winter, Walter",
+ #*     title     = "Superbeams versus neutrino factories",
+ #*     journal   = "Nucl. Phys.",
+ #*     volume    = "B645",
+ #*     year      = "2002",
+ #*     pages     = "3-48",
+ #*     eprint    = "hep-ph/0204352",
+ #*     SLACcitation  = "%%CITATION = HEP-PH 0204352;%%"
+ #* }
+ #
+ #* %The experiment in this file tries to approximate as closely as possible
+ #* %the following LOI
+ #* Article{Itow:2001ee,
+ #*    author    = "Itow, Y. and others",
+ #*    title     = "The JHF-Kamioka neutrino project",
+ #*    year      = "2001",
+ #*    eprint    = "hep-ex/0106019",
+ #*    SLACcitation  = "%%CITATION = HEP-EX 0106019;%%"
+ #* }
+ *
+ * Systematics similar to
+ * 
+ #* @Article{Ishitsuka:2005qi,
+ #*    author    = "Ishitsuka, Masaki and Kajita, Takaaki and Minakata,
+ #*                 Hisakazu and Nunokawa, Hiroshi",
+ #*    title     = "Resolving neutrino mass hierarchy and CP degeneracy by two
+ #*                 identical  detectors with different baselines",
+ #*    journal   = "Phys. Rev.",
+ #*    volume    = "D72",
+ #*    year      = "2005",
+ #*    pages     = "033003",
+ #*    eprint    = "hep-ph/0504026",
+ #*    SLACcitation  = "%%CITATION = HEP-PH 0504026;%%"
+ #* } *
+ * The initial file was prepared by Patrick Huber and Walter Winter. 
+ *
+ *  Last Update: 23/01/07 
+ *
+ *
+ * ##############################################################################
+ *                                                                                *
+ *                                                                                *
+ *                  THIS FILE HAS BEEN MODIFIED FOR THE TUTORIAL:                 *  
+ *		                                                                  *
+ *		              "ADVANCED USAGE OF AEDL"                            *
+ *                                                                                *
+ *	      at the GLoBES Workshop - Heidelberg - 24-26 January 2007            *
+ *                                                                                *
+ *                 It is a modified version of T2K.glb and uses only              *
+ *                 data from the disappearance channels.                          *
+ *                                                                                *
+ *                                                                                *
+ * ##############################################################################
+ */
+
+
+/* ####### Beam flux ####### */
+
+nuflux(#JHFplus)<
+	@flux_file="JHFplus.dat"
+	@time = 2	/* years */
+	@power = 0.77 	/* MW (proton intensity) */
+	@norm = 6.93185
+>
+
+nuflux(#JHFminus)<
+	@flux_file="JHFminus.dat"
+	@time = 6	/* years */
+	@power = 0.77 	/* MW (proton intensity) */
+	@norm = 6.93185
+>
+
+
+/* ####### Detector settings ###### */
+
+$target_mass = 	22.5	/* kt (fiducial mass)*/
+
+
+/* ####### Energy window ####### */
+
+$bins = 	20
+$emin = 	0.4	/* GeV */
+$emax = 	1.2	/* GeV */
+
+
+/* ####### Baseline setting ####### */
+
+$profiletype =	 	1 
+$baseline =		295.0	/* km */
+
+
+/* ####### Technical information ####### */
+
+$filter_state = 0 
+$filter_value = 1000000 
+
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+	@type = 1
+	@sigma_e = {0.0,0.0,0.085}
+>
+
+
+/* ####### Cross sections ####### */
+
+cross(#CC)<
+	@cross_file = "XCC.dat"
+>
+
+cross(#NC)<
+	@cross_file = "XNC.dat"
+>
+
+cross(#QE)<
+	@cross_file = "XQE.dat"
+>
+
+/* ####### Channel definitions ####### */
+
+channel(#NC_bckg)<
+	@channel = 	#JHFplus:	+:	NOSC_m:	NOSC_m:	#NC:    #ERES
+>
+
+channel(#NC_bar_bckg)<
+	@channel = 	#JHFminus:	-:	NOSC_m:	NOSC_m:	#NC:    #ERES
+>
+
+channel(#nu_mu_disappearance_QE)<
+	@channel = 	#JHFplus:	+:	m:	m:	#QE:    #ERES
+>
+
+channel(#ANTI_nu_mu_bar_disappearance_QE)<
+	@channel = 	#JHFminus:	-:	m:	m:	#QE:    #ERES
+>
+
+/* ####### Setting the rules ####### */
+
+rule(#NU_MU_Disapperance_QE)<
+	@signal = 0.9@#nu_mu_disappearance_QE
+	@signalerror = 0.025 : 0.0001   
+
+	@background = 0.0056373@#NC_bckg
+	@backgrounderror = 0.2 : 0.0001
+	
+	@sys_on_function = "chiSpectrumTilt"  
+	@sys_off_function = "chiNoSysSpectrum" 
+>
+
+rule(#NU_MU_BAR_Disappearance_QE)<
+	@signal = 0.9@#ANTI_nu_mu_bar_disappearance_QE
+	@signalerror = 0.025 : 0.0001
+
+	@background = 0.0056373@#NC_bar_bckg 
+	@backgrounderror = 0.2 : 0.0001
+	
+	@sys_on_function = "chiSpectrumTilt"  
+	@sys_off_function = "chiNoSysSpectrum" 
+>
+
+/**********************END**********************/
