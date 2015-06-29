@@ -19,7 +19,7 @@ set cntrparam levels discrete 4.6, 11.83   # Draw contours at C.L. 90% and 3 sig
 # Legend
 set title "Confidence regions in the {/Symbol q}_{13}-{/Symbol d}_{CP} plane"
 set label "sin^2(2{/Symbol q}_{13})" at graph 0.5,-0.14 center
-set label "{/Symbol d}_{CP} [{/Symbol p]" at graph 1.14,0.5 center rotate by -90
+set label "{/Symbol d}_{CP} [deg]" at graph 1.14,0.5 center rotate by -90
 
 # Do the actual plotting
 splot "th13delta.dat" with lines lt -2 lw 2

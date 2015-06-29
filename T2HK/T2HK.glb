@@ -139,7 +139,7 @@ channel(#ANTI_nu_e_bar_appearance_CC)<
 
 /* ####### Setting the rules ####### */
 
-
+/* 0 */
 rule(#NU_E_Appearance_QE)<
  	@signal = 0.50498@#nu_e_appearance_QE
 	@signalerror = 10. : 0.0001
@@ -151,7 +151,7 @@ rule(#NU_E_Appearance_QE)<
 	@sys_off_function = "chiSpectrumTilt" 
 > 
 
-
+/* 1 */
 rule(#NU_E_BAR_Appearance_QE)<
 	@signal = 0.50498@#ANTI_nu_e_bar_appearance_QE
 	@signalerror = 10. : 0.0001
@@ -163,7 +163,7 @@ rule(#NU_E_BAR_Appearance_QE)<
 	@sys_off_function = "chiSpectrumTilt" 
 >
 
-
+/* 2 */
 rule(#NU_MU_Disapperance_QE)<
 	@signal = 0.9@#nu_mu_disappearance_QE
 	@signalerror = 0.025 : 0.0001   
@@ -175,6 +175,7 @@ rule(#NU_MU_Disapperance_QE)<
 	@sys_off_function = "chiNoSysSpectrum" 
 >
 
+/* 3 */
 rule(#NU_MU_BAR_Disappearance_QE)<
 	@signal = 0.9@#ANTI_nu_mu_bar_disappearance_QE
 	@signalerror = 0.025 : 0.0001
@@ -186,6 +187,7 @@ rule(#NU_MU_BAR_Disappearance_QE)<
 	@sys_off_function = "chiNoSysSpectrum" 
 >
 
+/* 4 */
 rule(#NU_E_Appearance_CC)<
  	@signal = 0.50498@#nu_e_appearance_CC
 	@signalerror = 0.05 : 0.0001     /* follow hep-ph/0504026: 5 per cent norm errors for appearance */
@@ -197,6 +199,7 @@ rule(#NU_E_Appearance_CC)<
 	@sys_off_function = "chiNoSysTotalRates" 
 > 
 
+/* 5 */
 rule(#NU_E_BAR_Appearance_CC)<
 	@signal = 0.50498@#ANTI_nu_e_bar_appearance_CC
 	@signalerror = 0.05 : 0.0001     /* follow hep-ph/0504026: 5 per cent norm errors for appearance */
