@@ -1,3 +1,5 @@
 *.o
 *~
 *.eps
+th13delta.dat
+deltasig.dat
