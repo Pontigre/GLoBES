@@ -63,4 +63,4 @@ $(BIN): $(BIN).o
 	gcc $(CFLAGS) $(local_CFLAGS) -c $< $(INCFLAGS)
 .PHONY: clean
 clean:
-	rm -f $(BIN) $(OBJ)
+	rm -f $(BIN) $(OBJ) *~ th13delta.dat 

@@ -2,22 +2,25 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-
 #include <globes/globes.h>   /* GLoBES library */
 
 /* Files */
 char MYFILE[]="th13delta.dat";
 char AEDLFILE[]="T2HK.glb";
+//char AEDLFILE2[]="nuPRISM.glb";
+//char AEDLFILE3[]="Reactor2.glb";
 FILE *outfile = NULL;
 
 int main(int argc, char *argv[])
 { 
   /* Initialize libglobes */
-  glbInit(argv[0]); 
+  glbInit(argv[0]);
   glbSelectMinimizer(GLB_MIN_POWELL);
 
   /* Initialize experiment */
   glbInitExperiment(AEDLFILE,&glb_experiment_list[0],&glb_num_of_exps); 
+  //glbInitExperiment(AEDLFILE2,&glb_experiment_list[0],&glb_num_of_exps); 
+  //glbInitExperiment(AEDLFILE3,&glb_experiment_list[0],&glb_num_of_exps); 
 
   /* Intitialize output */
   outfile = fopen(MYFILE, "w");
@@ -27,6 +30,46 @@ int main(int argc, char *argv[])
     return -1;
   }
 
+  /* /\* Half the original errors *\/ */
+  /* /\* NU_E_Appearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 0, 5., 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 0, 0.025, 0.025); */
+  /* /\* NU_E_BAR_Appearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 1, 5., 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 1, 0.025, 0.025); */
+  /* /\* NU_MU_Disapperance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 2, 0.00125, 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 2, 0.1, 0.00005); */
+  /* /\* NU_MU_BAR_Disappearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 3, 0.0125, 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 3, 0.1, 0.00005); */
+  /* /\* NU_E_Appearance_CC *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 4, 0.025, 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 4, 0.025, 0.00005); */
+  /* /\* NU_E_BAR_Appearance_CC *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 5, 0.025, 0.00005); */
+  /* glbSetBGErrors(GLB_ALL, 5, 0.025, 0.00005); */
+
+  /* /\* Double the original errors *\/ */
+  /* /\* NU_E_Appearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 0, 20., 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 0, 0.10, 0.10); */
+  /* /\* NU_E_BAR_Appearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 1, 20., 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 1, 0.10, 0.10); */
+  /* /\* NU_MU_Disapperance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 2, 0.05, 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 2, 0.4, 0.0002); */
+  /* /\* NU_MU_BAR_Disappearance_QE *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 3, 0.05, 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 3, 0.4, 0.0002); */
+  /* /\* NU_E_Appearance_CC *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 4, 0.10, 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 4, 0.10, 0.0002); */
+  /* /\* NU_E_BAR_Appearance_CC *\/ */
+  /* glbSetSignalErrors(GLB_ALL, 5, 0.10, 0.0002); */
+  /* glbSetBGErrors(GLB_ALL, 5, 0.10, 0.0002); */
+
   /* Define "true" oscillation parameters */
   double theta12 = asin(sqrt(0.307));
   double theta13 = asin(sqrt(0.0241));
@@ -34,7 +77,7 @@ int main(int argc, char *argv[])
   double deltacp = 0.0;
   double dm21 = 7.6e-5;
   double dm32 = 2.4e-3;
-  
+
   glb_params true_values = glbAllocParams();
   glb_params test_values = glbAllocParams();
   glb_params input_errors = glbAllocParams();
@@ -42,10 +85,11 @@ int main(int argc, char *argv[])
   glbDefineProjection(th13delta_projection,GLB_FIXED,GLB_FIXED,GLB_FREE,
 		      GLB_FIXED,GLB_FIXED,GLB_FREE);
   glbSetDensityProjectionFlag(th13delta_projection, GLB_FIXED, GLB_ALL);
-  glbSetProjection(th13delta_projection);  
+  glbSetProjection(th13delta_projection);
 
   for(deltacp = -M_PI/2.0; deltacp < M_PI+0.1; deltacp += M_PI/2.0){
-    printf("Delta_CP = %g\n", deltacp);
+    double x = deltacp/M_PI;
+    printf("Delta_CP = %g\n", x);
 
     /* Define "true" oscillation parameter vector */
     glbDefineParams(true_values,theta12,theta13,theta23,deltacp,dm21,dm32);

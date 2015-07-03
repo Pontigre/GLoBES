@@ -1,0 +1,88 @@
+%!GLoBES
+/* Copyright 2004 The GLoBES Team
+ *
+ * If you modify this file you have to rename it.
+ *
+ * If you are using this file for producing a scientific publication
+ * or a talk please cite the following references and check the supporting
+ * files for a similar comment.
+ *
+ #* @Article{Huber:2003pm,
+ #*     author    = "Huber, Patrick and Lindner, M. and Schwetz, T. and Winter,
+ #*                  W.",
+ #*     title     = "Reactor neutrino experiments compared to superbeams",
+ #*     journal   = "Nucl. Phys.",
+ #*     volume    = "B665",
+ #*     year      = "2003",
+ #*     pages     = "487-519",
+ #*     eprint    = "hep-ph/0303232",
+ #*     SLACcitation  = "%%CITATION = HEP-PH 0303232;%%"
+ #* }
+ */
+
+$version="1.8.1"
+
+/* 	 Beam data 	 */
+
+flux(#Reactor)<
+	@flux_file="Reactor.dat"
+	@time = 8
+	@power = 10 /* GW thermal */
+	@norm = 1.1584e-12 
+>
+
+$target_mass = 	        100 /* tons */
+
+$bins = 		62
+
+$emin = 	        0.0018
+$emax = 	        0.008
+
+/* 	 Baseline 	 */
+
+$profiletype = 		3 
+$densitytab = 		{1e-6}
+$lengthtab = 		{1.7}
+
+
+/* 	 Technical information 	 */
+
+$filter_state = 0 
+$filter_value = 1000000 
+
+/*       Energy Resolution       */
+
+energy(#ERES)<
+	@type = 1
+	@sigma_function = #inverse_beta
+	@sigma_e = {0.05,0,0}
+>
+
+
+/* 	 Cross sections 	 */
+
+cross(#Reactor_CC)<
+	@cross_file = "XCCreactor.dat"
+>
+
+/* 	 Channels 	 */
+
+channel(#nu_e_disappearance_CC)<
+	@channel = 	#Reactor:	-:	e:	e:	#Reactor_CC:    #ERES
+>
+
+/* 	 Rules 		 */
+
+rule(#rule0)<
+ 	@signal = 1@#nu_e_disappearance_CC
+	@signalerror = 0.008 : 0.005
+	@background = 5e-8@#nu_e_disappearance_CC
+	@backgrounderror = 1e-6 : 1e-6
+	@backgroundcenter = 1.0 : 0.0
+	@errordim_sys_on = 9
+	@errordim_sys_off = 0
+	@energy_window = 0.0015 : 0.01
+> 
+
+
+/**********************END********************************************************************************************************************************************************************************************************************************************************************/
