@@ -14,14 +14,19 @@ ifdef preopen_modules
 predefs = -DGLB_STATIC
 endif
 
-BIN = th13delta
+BIN = th13delta deltasig
 OBJ = $(BIN).o
 
-$(BIN): $(BIN).o
-	gcc $(BIN).o -o $(BIN) $(LDFLAGS) $(local_LDFLAGS)
+all: $(BIN)
+
+th13delta: th13delta.o
+	gcc th13delta.o -o th13delta $(LDFLAGS) $(local_LDFLAGS)
+
+deltasig: deltasig.o
+	gcc deltasig.o -o deltasig $(LDFLAGS) $(local_LDFLAGS)
 
 %.o : %.c
 	gcc $(CFLAGS) $(local_CFLAGS) -c $< $(INCFLAGS)
 .PHONY: clean
 clean:
-	rm -f $(BIN) $(OBJ) *~ deltasig.dat th13delta.dat
+	rm -f $(BIN) *.o *~ deltasig.dat th13delta.dat events.dat *.eps
