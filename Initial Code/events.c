@@ -61,8 +61,14 @@ int main(int argc, char *argv[])
   glbSetOscillationParameters(true_values);
   glbSetRates();
 
-  glbShowRuleRates(outfile, 0, 2, GLB_ALL, GLB_W_EFF, GLB_W_BG, GLB_W_COEFF, GLB_SIG);
-    
+  int i;
+  int n_bins = glbGetNumberofBins(0);
+  double *true_rates_N = glgGetRuleRatePtr(0,0);
+  printf("Simulated Rates, experiment 0, rule 0: \n");
+  for(i=o;i<n_bins;i++){
+    printf("%g \n", true_rates_N[i]);
+  }
+
   /* Destroy parameter and projection vector(s) */
   glbFreeParams(true_values);
 

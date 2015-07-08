@@ -23,6 +23,8 @@ set label "{/Symbol d}_{CP} [degree]" at graph 1.14,0.5 center rotate by -90
 
 # Do the actual plotting
 splot "th13delta.dat" with lines lt -2 lw 2
+set title "Confidence regions in the {/Symbol q}_{13}-{/Symbol d}_{CP} - Statistics only"
+splot "th13delta_nosys.dat" with lines lt -2 lw 2
 
 # Show resulting EPS figure
 system "evince th13delta.eps"

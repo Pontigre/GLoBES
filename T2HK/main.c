@@ -8,10 +8,18 @@
 char AEDLFILE[]="T2HK.glb";
 char AEDLFILE2[]="nuPRISM.glb";
 char AEDLFILE3[]="Reactor2.glb";
-char MYFILE[]="th13delta.dat";
-char MYFILE2[]="th13delta_nosys.dat";
-FILE *outfile = NULL;
+char MYFILE1[]="init_flux_e.dat";
+char MYFILE2[]="init_flux_mu.dat";
+char MYFILE3[]="events_e.dat";
+char MYFILE4[]="events_mu.dat";
+char MYFILE5[]="th13delta.dat";
+char MYFILE6[]="th13delta_05xerror.dat";
+FILE *outfile1 = NULL;
 FILE *outfile2 = NULL;
+FILE *outfile3 = NULL;
+FILE *outfile4 = NULL;
+FILE *outfile5 = NULL;
+FILE *outfile6 = NULL;
 
 /* Global parameters */
 double theta12;
@@ -84,12 +92,12 @@ int main(int argc, char *argv[])
   //glbInitExperiment(AEDLFILE3,&glb_experiment_list[0],&glb_num_of_exps); /* Reactor */
 
   /* Intitialize output */
-  outfile = fopen(MYFILE, "w");
+  outfile1 = fopen(MYFILE1, "w");
   outfile2 = fopen(MYFILE2, "w");
-
-  /* Mess with the errors */
-  //HalfErrors();
-  //DoubleErrors();
+  outfile3 = fopen(MYFILE3, "w");
+  outfile4 = fopen(MYFILE4, "w");
+  outfile5 = fopen(MYFILE5, "w");
+  outfile6 = fopen(MYFILE6, "w");
 
   /* Define "true" oscillation parameters */
   theta12 = asin(sqrt(0.307));
@@ -99,6 +107,16 @@ int main(int argc, char *argv[])
   dm21 = 7.6e-5;
   dm32 = 2.4e-3;
 
+  /* Needed to scan the th13-delta plane */
+  double this_th13, this_delta;
+  double th13_lower  = asin(sqrt(0.01));
+  double th13_upper  = asin(sqrt(0.04));
+  double th13_steps  = 15;
+  double delta_lower = -M_PI;
+  double delta_upper = M_PI;
+  double delta_steps = 15;
+  double res;
+
   true_values = glbAllocParams();
   test_values = glbAllocParams();
   input_errors = glbAllocParams();
@@ -107,6 +125,57 @@ int main(int argc, char *argv[])
   glbDefineProjection(th13delta_projection,GLB_FIXED,GLB_FIXED,GLB_FREE,GLB_FIXED,GLB_FIXED,GLB_FREE);
   glbSetDensityProjectionFlag(th13delta_projection, GLB_FIXED, GLB_ALL);
   glbSetProjection(th13delta_projection);
+
+  glbDefineParams(true_values,theta12,theta13,theta23,deltacp,dm21,dm32);
+  glbSetDensityParams(true_values,1.0,GLB_ALL);
+
+  glbSetOscillationParameters(true_values);
+  glbSetRates();
+
+  /*------------------------------------- Initial Fluxes ---------------------------------------------------*/
+
+  printf("Initial fluxes \n");
+
+  /* Gets initial fluxes */
+  double e_min = 0.0;
+  double e_max = 3.0;
+  int n_bins = 100;
+  double e_step = (e_max-e_min)/(n_bins);
+  double dist = 295.0;
+  int polar = +1;
+  double E = 0.0;
+
+  for(E = e_min; E<e_max; E += e_step){
+    double flux = glbFlux(0, 0, E, dist, 1, polar);
+    fprintf(outfile1, "%g %g \n", E, flux);
+  }
+
+  for(E = e_min; E<e_max; E += e_step){
+    double flux = glbFlux(0, 0, E, dist, 2, polar);
+    fprintf(outfile2, "%g %g \n", E, flux);
+  }
+
+  fclose(outfile1);
+  fclose(outfile2);
+
+  /*---------------------------------------- Event Rates ---------------------------------------------------*/
+
+  printf("Event Rates \n");
+
+  // rule 0 = NU_E_Appearance_QE
+  // rule 2 = NU_MU_Disappearance_QE
+  // rule 4 = NU_MU_Disappearance_CC
+  // rule 5 = NU_E_Appearance_CC
+
+  glbShowRuleRates(outfile3, 0, 5, GLB_ALL, GLB_W_EFF, GLB_W_BG, GLB_W_COEFF, GLB_SIG);
+  glbShowRuleRates(outfile4, 0, 4, GLB_ALL, GLB_W_EFF, GLB_W_BG, GLB_W_COEFF, GLB_SIG);
+
+  fclose(outfile3);
+  fclose(outfile4);
+
+  /*------------------------------------- theta13 - delta_cp scan ---------------------------------------------------*/
+
+  printf("Initial th13-deltacp scan \n");
 
   for(deltacp = -M_PI/2.0; deltacp < M_PI+0.1; deltacp += M_PI/2.0){
     double x = deltacp/M_PI;
@@ -129,15 +198,50 @@ int main(int argc, char *argv[])
     glbSetOscillationParameters(true_values);
     glbSetRates();
 
-    /* Scan the th13-delta plane */
-    double this_th13, this_delta;
-    double th13_lower  = asin(sqrt(0.01));
-    double th13_upper  = asin(sqrt(0.04));
-    double th13_steps  = 15;
-    double delta_lower = -M_PI;
-    double delta_upper = M_PI;
-    double delta_steps = 15;
-    double res;
+    for(this_th13=th13_lower; this_th13<=th13_upper; this_th13+=(th13_upper-th13_lower)/th13_steps)
+      {
+	for(this_delta=delta_lower; this_delta<=delta_upper; this_delta+=(delta_upper-delta_lower)/delta_steps)
+	  {
+	    glbSetOscParams(test_values, this_th13, GLB_THETA_13);
+	    glbSetOscParams(test_values, this_delta, GLB_DELTA_CP);
+	    double i = sin(2*this_th13)*sin(2*this_th13);
+	    double j = this_delta*180.0/M_PI;
+	    double res=glbChiNP(test_values, NULL, GLB_ALL);
+	    fprintf(outfile5, "%g %g %g\n", i, j, res);
+	  }
+	fprintf(outfile5, "\n");
+      }
+  }
+
+  fclose(outfile5);
+
+  /*------------------------------------- theta13 - delta_cp scan - Half errors -------------------------------------*/
+
+  printf("th13-deltacp scan with half the errors \n");
+
+  HalfErrors();
+  delta_steps = 60;
+  th13_steps = 60;
+  for(deltacp = -M_PI/2.0; deltacp < M_PI+0.1; deltacp += M_PI/2.0){
+    double x = deltacp/M_PI;
+    printf("Delta_CP = %g\n", x);
+
+    /* Define "true" oscillation parameter vector */
+    glbDefineParams(true_values,theta12,theta13,theta23,deltacp,dm21,dm32);
+    glbSetDensityParams(true_values,1.0,GLB_ALL);
+ 
+    /* Define initial guess for the fit values */ 
+    glbDefineParams(test_values,theta12,theta13,theta23,deltacp,dm21,dm32);  
+    glbSetDensityParams(test_values,1.0,GLB_ALL);
+
+    glbDefineParams(input_errors, theta12*0.1, 0, 0, 0, dm21*0.1, 0);
+    glbSetDensityParams(input_errors,0.05,GLB_ALL);
+    glbSetInputErrors(input_errors);
+    glbSetCentralValues(true_values);
+
+    /* Compute simulated data */
+    glbSetOscillationParameters(true_values);
+    glbSetRates();
 
     for(this_th13=th13_lower; this_th13<=th13_upper; this_th13+=(th13_upper-th13_lower)/th13_steps)
       {
@@ -148,40 +252,17 @@ int main(int argc, char *argv[])
 	    double i = sin(2*this_th13)*sin(2*this_th13);
 	    double j = this_delta*180.0/M_PI;
 	    double res=glbChiNP(test_values, NULL, GLB_ALL);
-	    fprintf(outfile, "%g %g %g\n", i, j, res);
+	    fprintf(outfile6, "%g %g %g\n", i, j, res);
 	  }
-	fprintf(outfile, "\n");
+	fprintf(outfile6, "\n");
       }
-
-    /* Calculate chi2 with statistics only */
-    glbSwitchSystematics(GLB_ALL,GLB_ALL,GLB_OFF);
-    delta_steps = 60;
-    for(this_th13=th13_lower; this_th13<=th13_upper; this_th13+=(th13_upper-th13_lower)/th13_steps)
-      {
-	for(this_delta=delta_lower; this_delta<=delta_upper; this_delta+=(delta_upper-delta_lower)/delta_steps)
-	  {
-	    
-	    glbSetOscParams(test_values, this_th13, GLB_THETA_13);
-	    glbSetOscParams(test_values, this_delta, GLB_DELTA_CP);
-	    double i = sin(2*this_th13)*sin(2*this_th13);
-	    double j = this_delta*180.0/M_PI;
-	    //double res=glbChiNP(test_values, NULL, GLB_ALL);
-	    double res=glbChiSys(test_values, GLB_ALL, GLB_ALL);
-	    fprintf(outfile2, "%g %g %g\n", i, j, res);
-	  }
-	fprintf(outfile2, "\n");
-      }
-    glbSwitchSystematics(GLB_ALL,GLB_ALL,GLB_ON);
   }
+  fclose(outfile6);
 
-  fclose(outfile);
-  
-  /* Destroy parameter and projection vector(s) */
-  glbFreeParams(true_values);
   glbFreeParams(test_values);
   glbFreeParams(input_errors);
   glbFreeProjection(th13delta_projection);
-
+  glbFreeParams(true_values);
   return 0;
 }
 
