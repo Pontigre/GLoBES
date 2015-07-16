@@ -23,8 +23,11 @@ set label "{/Symbol d}_{CP} [degree]" at graph 1.14,0.5 center rotate by -90
 
 # Do the actual plotting
 splot "th13delta.dat" with lines lt -2 lw 2
-set title "Confidence regions in the {/Symbol q}_{13}-{/Symbol d}_{CP} - Statistics only"
-splot "th13delta_nosys.dat" with lines lt -2 lw 2
+
+set key outside
+splot "th13delta.dat" lt -1 lw 2 lc 12 title "Normal Uncertainties", \
+      "th13delta_05xerror.dat" lt -2 lw 2 title "Half Uncertainties"
+
 
 # Show resulting EPS figure
 system "evince th13delta.eps"
