@@ -5,14 +5,14 @@ $version="3.0.0"
 /* ####### Beam flux ####### */
 
 nuflux(#JHFplus)<
-	@flux_file="JHFplus.dat"
+	@flux_file="JHF_nuPRISM_plus.dat"
 	@time = 4	/* years */
 	@power = 4 	/* MW (proton intensity) */
 	@norm = 6.93185
 >
 
 nuflux(#JHFminus)<
-	@flux_file="JHFminus.dat"
+	@flux_file="JHF_nuPRISM_minus.dat"
 	@time = 4	/* years */
 	@power = 4 	/* MW (proton intensity) */
 	@norm = 6.93185
@@ -166,10 +166,10 @@ rule(#NU_E_BAR_Appearance_QE)<
 /* 2 */
 rule(#NU_MU_Disapperance_QE)<
 	@signal = 0.9@#nu_mu_disappearance_QE
-	@signalerror = 10. : 0.0001   
+	@signalerror = 0.025 : 0.0001   
 
 	@background = 0.0056373@#NC_bckg
-	@backgrounderror = 0.05 : 0.05
+	@backgrounderror = 0.2 : 0.0001
 	
 	@sys_on_function = "chiSpectrumTilt"  
 	@sys_off_function = "chiNoSysSpectrum" 

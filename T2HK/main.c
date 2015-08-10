@@ -8,13 +8,13 @@
 char AEDLFILE[]="T2HK.glb";
 char AEDLFILE2[]="nuPRISM.glb";
 char AEDLFILE3[]="Reactor2.glb";
-char MYFILE1[]="init_flux_e.dat";
-char MYFILE2[]="init_flux_mu.dat";
-char MYFILE3[]="events_e.dat";
-char MYFILE4[]="events_mu.dat";
-char MYFILE5[]="deltasig.dat";
-char MYFILE6[]="th13delta.dat";
-char MYFILE7[]="th13delta_05xerror.dat";
+char MYFILE1[]="nuPRISM_init_flux_e.dat";
+char MYFILE2[]="nuPRISM_init_flux_mu.dat";
+char MYFILE3[]="nuPRISM_events_e.dat";
+char MYFILE4[]="nuPRISM_events_mu.dat";
+char MYFILE5[]="nuPRISM_deltasig.dat";
+char MYFILE6[]="nuPRISM_th13delta.dat";
+char MYFILE7[]="nuPRISM_th13delta_05xerror.dat";
 FILE *outfile1 = NULL;
 FILE *outfile2 = NULL;
 FILE *outfile3 = NULL;
@@ -89,8 +89,8 @@ int main(int argc, char *argv[])
   glbInit(argv[0]);
 
   /* Initialize experiment */
-  glbInitExperiment(AEDLFILE,&glb_experiment_list[0],&glb_num_of_exps); 
-  //glbInitExperiment(AEDLFILE2,&glb_experiment_list[0],&glb_num_of_exps); /* nuPRISM */
+  //glbInitExperiment(AEDLFILE,&glb_experiment_list[0],&glb_num_of_exps); 
+  glbInitExperiment(AEDLFILE2,&glb_experiment_list[0],&glb_num_of_exps); /* nuPRISM */
   //glbInitExperiment(AEDLFILE3,&glb_experiment_list[0],&glb_num_of_exps); /* Reactor */
 
   /* Intitialize output */

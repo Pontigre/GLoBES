@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 { 
   glbInit(argv[0]);
   glbInitExperiment(AEDLFILE,&glb_experiment_list[0],&glb_num_of_exps); 
+  glbInitExperiment(AEDLFILE2,&glb_experiment_list[0],&glb_num_of_exps); 
 
   outfile1 = fopen(MYFILE1, "w");
   outfile2 = fopen(MYFILE2, "w");

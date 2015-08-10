@@ -14,7 +14,7 @@ ifdef preopen_modules
 predefs = -DGLB_STATIC
 endif
 
-BIN = main th13delta deltasig events test_all test1 test2 test3 test4 1Dproj
+BIN = main th13delta th23dm32 deltasig events test_all test1 test2 test3 test4 1Dproj
 OBJ = $(BIN).o
 
 all: $(BIN)
@@ -24,6 +24,9 @@ main: main.o
 
 th13delta: th13delta.o
 	gcc th13delta.o -o th13delta $(LDFLAGS) $(local_LDFLAGS)
+
+th23dm32: th23dm32.o
+	gcc th23dm32.o -o th23dm32 $(LDFLAGS) $(local_LDFLAGS)
 
 deltasig: deltasig.o
 	gcc deltasig.o -o deltasig $(LDFLAGS) $(local_LDFLAGS)
@@ -54,5 +57,5 @@ test4: test4.o
 	gcc $(CFLAGS) $(local_CFLAGS) -c $< $(INCFLAGS)
 .PHONY: clean
 clean:
-	rm -f $(BIN) *.o *~ deltasig.dat th13delta.dat th13delta_05xerror.dat events_* init_flux* *.eps rates* test1.dat test2.dat test3.dat test4a.dat test4b.dat test4c.dat test4d.dat th13.dat th23.dat
+	rm -f $(BIN) *.o *~ deltasig.dat th13delta.dat th13delta_05xerror.dat events_* init_flux* *.eps rates* test1.dat test2.dat test3.dat test4a.dat test4b.dat test4c.dat test4d.dat th13.dat th23.dat th23dm32.dat th23dm32_05xerror.dat
 

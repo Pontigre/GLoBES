@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
 
   glbInit(argv[0]);
   glbInitExperiment(AEDLFILE,&glb_experiment_list[0],&glb_num_of_exps); 
+  glbInitExperiment(AEDLFILE2,&glb_experiment_list[0],&glb_num_of_exps); 
 
   theta12 = asin(sqrt(0.307));
   theta13 = asin(sqrt(0.0241));

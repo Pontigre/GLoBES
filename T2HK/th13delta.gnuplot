@@ -2,7 +2,7 @@
 
 # Redirect output to file
 set terminal postscript enhanced eps color
-set output "th13delta.eps"
+set output "th13delta_nuPRISM.eps"
 
 # Layout
 set contour base             # Draw contours on the base plane
@@ -22,13 +22,13 @@ set label "sin^2(2{/Symbol q}_{13})" at graph 0.5,-0.14 center
 set label "{/Symbol d}_{CP} [degree]" at graph 1.14,0.5 center rotate by -90
 
 # Do the actual plotting
-splot "th13delta.dat" with lines lt -2 lw 2
+#splot "th13delta_nuPRISM.dat" with lines lt -2 lw 2
 
-set key outside
-splot "th13delta.dat" lt -1 lw 2 lc 12 title "Normal Uncertainties", \
-      "th13delta_05xerror.dat" lt -2 lw 2 title "Half Uncertainties"
-
+set key 
+set cntrparam levels discrete 4.6
+splot "th13delta_nuPRISM.dat" with lines lt 1 lw 2 title "nuPRISM constraint", \
+"th13delta.dat" with lines lt 0 lw 2 title "normal T2HK"
 
 # Show resulting EPS figure
-system "evince th13delta.eps"
+system "evince th13delta_nuPRISM.eps"
 
